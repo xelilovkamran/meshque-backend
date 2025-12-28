@@ -6,13 +6,6 @@ services:
     restart: always
     volumes:
       - meshque-static-data:/vol/web
-    # environment:
-    #   - DB_HOST=db
-    #   - DB_NAME=${DB_NAME}
-    #   - DB_USER=${DB_USER}
-    #   - DB_PASSWORD=${DB_PASSWORD}
-    #   - SECRET_KEY=${DJANGO_SECRET_KEY}
-    #   - ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
     env_file:
       - .env.production
 
