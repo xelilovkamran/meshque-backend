@@ -1,0 +1,42 @@
+services:
+  app:
+    container_name: dev-meshqu-backend-app
+    build:
+      context: .
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./app:/meshque/app
+      - dev-meshque-static-data:/vol/web
+    command: >
+      sh -c '/py/bin/python manage.py wait_for_db &&
+             /py/bin/python manage.py collectstatic --noinput &&
+             /py/bin/python manage.py migrate &&
+             /py/bin/python manage.py runserver 0.0.0.0:8000'
+    # environment:
+    #   - DB_HOST=db
+    #   - DB_NAME=meshque_dev
+    #   - DB_USER=devuser
+    #   - DB_PASSWORD=changeme
+    #   - DB_PORT=5432
+    #   - DEBUG=1
+    env_file:
+      - .env.development
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    volumes:
+      - dev-meshque-postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=meshque_dev
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+    ports:
+      - 5432:5432
+
+volumes:
+  dev-meshque-postgres-data:
+  dev-meshque-static-data:

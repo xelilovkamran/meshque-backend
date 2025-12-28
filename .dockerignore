@@ -1,0 +1,37 @@
+# Git
+.git 
+.gitignore
+
+# Docker
+docker-compose.yml
+docker-compose-development.yml
+Dockerfile
+.docker
+.dockerignore
+
+# Python
+app/__pycache__
+app/*/__pycache__
+app/*/*/__pycache__
+app/*/*/*/__pycache__
+
+
+# Django stuff:
+*.log
+
+
+# Virtual environment
+.env
+.env.production
+.env.development
+.venv/
+venv/
+env/
+.env/
+
+# VS Code
+.vscode/
+
+# Additional ignored files
+README.md
+command.md
