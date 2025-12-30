@@ -33,6 +33,7 @@ from drf_spectacular.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
+    path('product/', include('product.urls')),
 
     path('user/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('user/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

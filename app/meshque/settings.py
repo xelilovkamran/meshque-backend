@@ -43,6 +43,7 @@ ALLOWED_HOSTS.extend(
 LOCAL_APP = [
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
+    'product.apps.ProductConfig',
 ]
 
 # Application definition
@@ -207,6 +208,7 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API documentation with Swagger and DRF Spectacular',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': True,
+    'COMPONENT_SPLIT_REQUEST': True,
     'SWAGGER_UI_SETTINGS': {
         'persistAuthorization': True,
     },
