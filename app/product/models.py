@@ -55,6 +55,8 @@ class Product(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='products')
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def is_new(self):
         new_threshold = timedelta(days=30)
 

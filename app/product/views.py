@@ -1,9 +1,9 @@
 from .models import ColorVariant, SizeVariant, Category, Product, ProductImage
 from .serializers import ColorVariantSerializer, ProductDetailSerializer, SizeVariantSerializer, CategorySerializer, ProductImageSerializer, ProductListSerializer
 from rest_framework import generics
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.parsers import MultiPartParser, FormParser
-from drf_spectacular.utils import extend_schema
+from .filters import ProductFilter
 
 # API Views
 
@@ -54,14 +54,6 @@ class ProductImageList(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser]
     parser_classes = [MultiPartParser, FormParser]
 
-    @extend_schema(
-        request={
-            'multipart/form-data': ProductImageSerializer,
-        },
-    )
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
 
 class ProductImageDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProductImage.objects.all()
@@ -74,10 +66,19 @@ class ProductImageDetail(generics.RetrieveUpdateDestroyAPIView):
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
-    permission_classes = [IsAdminUser]
+    filterset_class = ProductFilter
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAdminUser()]
+        return [AllowAny()]
 
 
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
-    permission_classes = [IsAdminUser]
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAdminUser()]
