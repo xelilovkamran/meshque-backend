@@ -44,6 +44,7 @@ LOCAL_APP = [
     'account.apps.AccountConfig',
     'core.apps.CoreConfig',
     'product.apps.ProductConfig',
+    'basket.apps.BasketConfig',
 ]
 
 # Application definition

@@ -76,7 +76,6 @@ class ProductBaseSerializer(serializers.ModelSerializer):
         size_variants = validated_data.pop("size_variant_ids", [])
         color_variants = validated_data.pop("color_variant_ids", [])
         images = validated_data.pop("image_ids", [])
-        print("images:", images)
 
         product = Product.objects.create(**validated_data)
 
