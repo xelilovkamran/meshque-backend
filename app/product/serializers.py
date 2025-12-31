@@ -28,7 +28,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ProductBaseSerializer(serializers.ModelSerializer):
-    # READ (full objects)
+    # READ
     size_variants = SizeVariantSerializer(many=True, read_only=True)
     color_variants = ColorVariantSerializer(many=True, read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
@@ -54,47 +54,46 @@ class ProductBaseSerializer(serializers.ModelSerializer):
         source="category",
     )
 
-    image_ids = serializers.PrimaryKeyRelatedField(
-        queryset=ProductImage.objects.all(),
-        many=True,
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(),
         write_only=True,
         required=False,
+        allow_empty=True,
     )
 
     class Meta:
         model = Product
         fields = "__all__"
-        extra_fields = [
-            "size_variant_ids",
-            "color_variant_ids",
-            "category_id",
-            "image_ids",
-        ]
+        extra_fields = ["size_variant_ids",
+                        "color_variant_ids", "category_id", "uploaded_images"]
 
     @transaction.atomic
     def create(self, validated_data):
         size_variants = validated_data.pop("size_variant_ids", [])
         color_variants = validated_data.pop("color_variant_ids", [])
-        images = validated_data.pop("image_ids", [])
+        uploaded_images = validated_data.pop("uploaded_images", [])
 
         product = Product.objects.create(**validated_data)
 
         if size_variants:
             product.size_variants.set(size_variants)
+
         if color_variants:
             product.color_variants.set(color_variants)
 
-        if images:
-            ProductImage.objects.filter(
-                id__in=[i.id for i in images]).update(product=product)
+        if uploaded_images:
+            ProductImage.objects.bulk_create(
+                [ProductImage(product=product, image=img)
+                 for img in uploaded_images]
+            )
 
         return product
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        size_variants = validated_data.pop("size_variant_ids", None)
-        color_variants = validated_data.pop("color_variant_ids", None)
-        images = validated_data.pop("image_ids", None)
+        size_variants = validated_data.pop("size_variant_ids", [])
+        color_variants = validated_data.pop("color_variant_ids", [])
+        uploaded_images = validated_data.pop("uploaded_images", None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -106,10 +105,11 @@ class ProductBaseSerializer(serializers.ModelSerializer):
         if color_variants is not None:
             instance.color_variants.set(color_variants)
 
-        if images is not None:
-            ProductImage.objects.filter(product=instance).update(product=None)
-            ProductImage.objects.filter(
-                id__in=[i.id for i in images]).update(product=instance)
+        if uploaded_images is not None and len(uploaded_images) > 0:
+            ProductImage.objects.bulk_create(
+                [ProductImage(product=instance, image=img)
+                 for img in uploaded_images]
+            )
 
         return instance
 

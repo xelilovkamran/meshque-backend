@@ -67,6 +67,7 @@ class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
     filterset_class = ProductFilter
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_permissions(self):
         if self.request.method == "POST":
@@ -77,6 +78,7 @@ class ProductList(generics.ListCreateAPIView):
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductDetailSerializer
+    parser_classes = (MultiPartParser, FormParser)
 
     def get_permissions(self):
         if self.request.method == "GET":

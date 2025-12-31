@@ -7,10 +7,12 @@ from .serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view,  permission_classes
 from drf_spectacular.utils import extend_schema
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class UserApiView(APIView):
     serializer_class = UserSerializer
+    parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
