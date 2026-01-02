@@ -51,7 +51,9 @@ LOCAL_APP = [
 # Application definition
 
 INSTALLED_APPS = [
+    'django_daisy',
     'django.contrib.admin',
+    'django.contrib.humanize',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -230,3 +232,12 @@ SPECTACULAR_SETTINGS = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 APPEND_SLASH = True
+
+# Django Daisy settings
+
+DAISY_SETTINGS = {
+    'SITE_TITLE': 'Meshque Admin',
+    'SITE_HEADER': 'Administration',
+    'INDEX_TITLE': 'Hi, welcome to your dashboard',
+    # 'SITE_LOGO': '/static/admin/img/daisyui-logomark.svg',
+}
