@@ -45,6 +45,7 @@ class Product(models.Model):
     description_ru = models.TextField()
 
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_percentage = models.FloatField(default=0.0)
     stock = models.PositiveIntegerField()
 
     size_variants = models.ManyToManyField(
@@ -63,6 +64,12 @@ class Product(models.Model):
         threshold_date = timezone.now() - new_threshold
 
         return self.created_at >= threshold_date
+
+    def discounted_price(self):
+        if self.discount_percentage > 0:
+            discount_amount = (self.discount_percentage / 100) * self.price
+            return self.price - discount_amount
+        return self.price
 
     def __str__(self):
         return self.name_az
